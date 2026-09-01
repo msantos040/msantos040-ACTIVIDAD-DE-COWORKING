@@ -7,9 +7,9 @@ import { Producto } from '../models/producto';
 export class ProductoService {
 
   private productos: Producto[] = [];
-  // Datos iniciales para facilitar pruebas CRUD
-  // Estos se usan si no se agregan productos desde la aplicación
+
   private initialProducts: Producto[] = [
+
     {
       codigo: 'TEC001',
       nombre: 'Teclado mecánico',
@@ -23,6 +23,7 @@ export class ProductoService {
       descripcion: 'Teclado mecánico RGB',
       activo: true
     },
+
     {
       codigo: 'TEC002',
       nombre: 'Mouse inalámbrico',
@@ -36,6 +37,7 @@ export class ProductoService {
       descripcion: 'Mouse inalámbrico',
       activo: true
     },
+
     {
       codigo: 'ALI001',
       nombre: 'Galletas',
@@ -49,33 +51,47 @@ export class ProductoService {
       descripcion: 'Paquete de galletas',
       activo: true
     }
+
   ];
 
   obtenerProductos(): Producto[] {
-    // Si no hay productos, inicializar con datos de ejemplo
-    if (!this.productos || this.productos.length === 0) {
-      this.productos = [...this.initialProducts];
+
+    if (this.productos.length === 0) {
+      this.productos = [
+        ...this.initialProducts
+      ];
     }
+
     return this.productos;
   }
 
   agregarProducto(producto: Producto): void {
-    this.productos.push(producto);
+
+    this.productos.push({
+      ...producto
+    });
   }
 
   actualizarProducto(producto: Producto): void {
-    const indice = this.productos.findIndex(
-      p => p.codigo === producto.codigo
-    );
+
+    const indice =
+      this.productos.findIndex(
+        p => p.codigo === producto.codigo
+      );
 
     if (indice !== -1) {
-      this.productos[indice] = producto;
+
+      this.productos[indice] = {
+        ...producto
+      };
     }
   }
 
   eliminarProducto(codigo: string): void {
-    this.productos = this.productos.filter(
-      p => p.codigo !== codigo
-    );
+
+    this.productos =
+      this.productos.filter(
+        p => p.codigo !== codigo
+      );
   }
 }
