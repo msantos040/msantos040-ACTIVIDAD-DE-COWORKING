@@ -60,6 +60,9 @@ importers:
       jsdom:
         specifier: ^28.0.0
         version: 28.1.0
+      node-module:
+        specifier: ^2.0.0
+        version: 2.0.0
       prettier:
         specifier: ^3.8.1
         version: 3.9.6
@@ -2078,6 +2081,11 @@ packages:
 
   node-gyp-build-optional-packages@5.2.2:
     resolution: {integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw==}
+    hasBin: true
+
+  node-module@2.0.0:
+    resolution: {integrity: sha512-/eWKaM+P/2UGqoDQNeZTJrZqj55daNoRZgeKVluwb+UTrg9RPmfByBO2nI5gFnShrPW7q7PaVTBu3E5ZePCYvQ==}
+    engines: {iojs: ^3.0.0, node: ^6.0.0, npm: ^3.0.0}
     hasBin: true
 
   node-releases@2.0.54:
@@ -4362,6 +4370,8 @@ snapshots:
     dependencies:
       detect-libc: 2.1.2
     optional: true
+
+  node-module@2.0.0: {}
 
   node-releases@2.0.54: {}
 
