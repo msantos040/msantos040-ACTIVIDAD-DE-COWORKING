@@ -1,6 +1,6 @@
-<form [formGroup]="productoForm" (ngSubmit)="guardar()" class="producto-form">
+<form [formGroup]="productoForm" (ngSubmit)="onSubmit()" class="producto-form">
 
-  <h2 class="form-title">{{ esEdicion ? 'Editar Producto' : 'Nuevo Producto' }}</h2>
+  <h2 class="form-title">Nuevo Producto</h2>
 
   <!-- Código -->
   <div class="form-group">
@@ -19,9 +19,9 @@
           <span>El código es obligatorio</span>
         }
         @if (productoForm.get('codigo')?.errors?.['minlength']) {
-          <span>Mínimo 4 caracteres</span>
+          <span>Mínimo 3 caracteres</span>
         }
-        @if (productoForm.get('codigo')?.errors?.['codigoExiste']) {
+        @if (productoForm.get('codigo')?.errors?.['codigoDuplicado']) {
           <span>El código ya existe</span>
         }
       </div>
@@ -43,9 +43,6 @@
       <div class="error-message">
         @if (productoForm.get('nombre')?.errors?.['required']) {
           <span>El nombre es obligatorio</span>
-        }
-        @if (productoForm.get('nombre')?.errors?.['minlength']) {
-          <span>Mínimo 3 caracteres</span>
         }
       </div>
     }
@@ -108,7 +105,10 @@
         formControlName="precioVenta"
         min="0"
         step="0.01"
-        [class.invalid]="productoForm.get('precioVenta')?.invalid && productoForm.get('precioVenta')?.touched"
+        [class.invalid]="
+          (productoForm.get('precioVenta')?.invalid && productoForm.get('precioVenta')?.touched) ||
+          (productoForm.hasError('precioVentaInvalido') && productoForm.get('precioVenta')?.touched)
+        "
       />
 
       @if (productoForm.get('precioVenta')?.invalid && productoForm.get('precioVenta')?.touched) {
@@ -119,6 +119,12 @@
           @if (productoForm.get('precioVenta')?.errors?.['min']) {
             <span>Debe ser mayor o igual a 0</span>
           }
+        </div>
+      }
+
+      @if (productoForm.hasError('precioVentaInvalido') && productoForm.get('precioVenta')?.touched) {
+        <div class="error-message">
+          <span>El precio de venta debe ser mayor que el precio de compra</span>
         </div>
       }
     </div>
@@ -213,19 +219,20 @@
       id="descripcion"
       formControlName="descripcion"
       rows="4"
-      maxlength="200"
-      placeholder="Descripción del producto (máx. 200 caracteres)"
+      [attr.maxlength]="maxCaracteres"
+      placeholder="Descripción del producto (máx. {{ maxCaracteres }} caracteres)"
       [class.invalid]="productoForm.get('descripcion')?.invalid && productoForm.get('descripcion')?.touched"
     ></textarea>
 
     <div class="char-counter">
-      {{ productoForm.get('descripcion')?.value?.length || 0 }} / 200 caracteres
+      {{ productoForm.get('descripcion')?.value?.length || 0 }} / {{ maxCaracteres }} caracteres
+      (restan {{ caracteresRestantes }})
     </div>
 
     @if (productoForm.get('descripcion')?.invalid && productoForm.get('descripcion')?.touched) {
       <div class="error-message">
         @if (productoForm.get('descripcion')?.errors?.['maxlength']) {
-          <span>Máximo 200 caracteres</span>
+          <span>Máximo {{ maxCaracteres }} caracteres</span>
         }
       </div>
     }
@@ -242,10 +249,7 @@
   <!-- Botones -->
   <div class="form-actions">
     <button type="submit" class="btn btn-primary" [disabled]="productoForm.invalid">
-      {{ esEdicion ? 'Actualizar' : 'Guardar' }}
-    </button>
-    <button type="button" class="btn btn-secondary" (click)="cancelar()">
-      Cancelar
+      Guardar
     </button>
   </div>
 
