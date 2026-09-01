@@ -20,25 +20,23 @@
       />
     </div>
 
-    <div class="campo">
-      <label for="categoria">Categoría</label>
+      <div class="campo">
+        <label for="categoria">Categoría</label>
 
-      <select
-        id="categoria"
-        [(ngModel)]="categoriaSeleccionada"
-        (change)="buscar()"
-      >
+        <select
+          id="categoria"
+          [(ngModel)]="categoriaSeleccionada"
+          (change)="buscar()"
+        >
 
-        <option value="">Todas</option>
+          <option value="">Todas</option>
 
-        @for (categoria of categorias; track categoria) {
-          <option [value]="categoria">
+          <option *ngFor="let categoria of categorias" [value]="categoria">
             {{ categoria }}
           </option>
-        }
 
-      </select>
-    </div>
+        </select>
+      </div>
 
     <div class="campo boton-container">
       <button
@@ -82,94 +80,31 @@
 
       <tbody>
 
-        @for (producto of productosFiltrados; track producto.codigo) {
+        <tr *ngFor="let producto of productosFiltrados; trackBy: trackByCodigo">
 
-          <tr>
+          <td>{{ producto.codigo }}</td>
+          <td>{{ producto.nombre }}</td>
+          <td><span class="categoria">{{ producto.categoria }}</span></td>
+          <td>Q{{ producto.precioCompra.toFixed(2) }}</td>
+          <td>Q{{ producto.precioVenta.toFixed(2) }}</td>
+          <td>{{ producto.existencias }}</td>
+          <td>
+            <span [class.estado]="true" [class.activo]="producto.activo" [class.inactivo]="!producto.activo">
+              {{ producto.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td>
+            <div class="acciones">
+              <button type="button" class="btn-editar" (click)="editarProducto(producto)">Editar</button>
+              <button type="button" class="btn-eliminar" (click)="eliminarProducto(producto)">Eliminar</button>
+            </div>
+          </td>
 
-            <td>
-              {{ producto.codigo }}
-            </td>
+        </tr>
 
-            <td>
-              {{ producto.nombre }}
-            </td>
-
-            <td>
-              <span class="categoria">
-                {{ producto.categoria }}
-              </span>
-            </td>
-
-            <td>
-              Q{{ producto.precioCompra.toFixed(2) }}
-            </td>
-
-            <td>
-              Q{{ producto.precioVenta.toFixed(2) }}
-            </td>
-
-            <td>
-              {{ producto.existencias }}
-            </td>
-
-            <td>
-
-              @if (producto.activo) {
-
-                <span class="estado activo">
-                  Activo
-                </span>
-
-              } @else {
-
-                <span class="estado inactivo">
-                  Inactivo
-                </span>
-
-              }
-
-            </td>
-
-            <td>
-
-              <div class="acciones">
-
-                <button
-                  type="button"
-                  class="btn-editar"
-                >
-                  Editar
-                </button>
-
-                <button
-                  type="button"
-                  class="btn-eliminar"
-                >
-                  Eliminar
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
-        }
-
-        @empty {
-
-          <tr>
-
-            <td
-              colspan="8"
-              class="sin-resultados"
-            >
-              No se encontraron productos.
-            </td>
-
-          </tr>
-
-        }
+        <tr *ngIf="productosFiltrados.length === 0">
+          <td colspan="8" class="sin-resultados">No se encontraron productos.</td>
+        </tr>
 
       </tbody>
 

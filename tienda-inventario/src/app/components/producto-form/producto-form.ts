@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import { ProductoService } from '../../services/producto';
 import { Producto } from '../../models/producto';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-producto-form',
-  templateUrl: './producto-form.component.html',
-  styleUrls: ['./producto-form.component.css']
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './producto-form.html',
+  styleUrls: ['./producto-form.css']
 })
 export class ProductoFormComponent implements OnInit {
   productoForm!: FormGroup;
@@ -14,11 +18,20 @@ export class ProductoFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private productoService: ProductoService
+    private productoService: ProductoService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
+
+  private editingCodigo: string | null = null;
 
   ngOnInit(): void {
     this.inicializarFormulario();
+    // Si viene un parámetro de ruta con código, cargar producto para edición
+    const codigo = this.route.snapshot.paramMap.get('codigo');
+    if (codigo) {
+      this.cargarParaEdicion(codigo);
+    }
   }
 
   inicializarFormulario(): void {
@@ -86,8 +99,15 @@ export class ProductoFormComponent implements OnInit {
     const productoData: Producto = this.productoForm.value;
 
     try {
-      this.productoService.agregarProducto(productoData);
-      console.log('Producto guardado con éxito');
+      if (this.editingCodigo) {
+        // mantener el mismo código si se editó
+        productoData.codigo = this.editingCodigo;
+        this.productoService.actualizarProducto(productoData);
+        console.log('Producto actualizado con éxito');
+      } else {
+        this.productoService.agregarProducto(productoData);
+        console.log('Producto guardado con éxito');
+      }
 
       this.productoForm.reset({
         precioCompra: 0,
@@ -97,8 +117,32 @@ export class ProductoFormComponent implements OnInit {
         fechaIngreso: new Date().toISOString().substring(0, 10),
         activo: true
       });
+      this.editingCodigo = null;
+      // Regresar a la lista después de guardar/actualizar
+      this.router.navigate(['list']);
     } catch (error) {
       console.error('Error al guardar el producto:', error);
     }
+  }
+
+  cargarParaEdicion(codigo: string): void {
+    const producto = this.productoService.obtenerProductos().find(p => p.codigo === codigo);
+    if (!producto) {
+      return;
+    }
+    this.editingCodigo = producto.codigo;
+    this.productoForm.patchValue({
+      codigo: producto.codigo,
+      nombre: producto.nombre,
+      categoria: producto.categoria,
+      precioCompra: producto.precioCompra,
+      precioVenta: producto.precioVenta,
+      existencias: producto.existencias,
+      stockMinimo: producto.stockMinimo,
+      proveedor: producto.proveedor,
+      fechaIngreso: producto.fechaIngreso,
+      descripcion: producto.descripcion,
+      activo: producto.activo
+    });
   }
 }

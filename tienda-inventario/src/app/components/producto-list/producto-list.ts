@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Producto } from '../../models/producto';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { ProductoService } from '../../services/producto';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-producto-list',
-  imports: [FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './producto-list.html',
-  styleUrl: './producto-list.css'
+  styleUrls: ['./producto-list.css']
 })
 
-export class ProductoList {
+export class ProductoList implements OnInit {
 
   productos: Producto[] = [
     {
@@ -56,16 +59,17 @@ export class ProductoList {
 
   productosFiltrados: Producto[] = [];
 
-  constructor(private productoService: ProductoService) {
-     this.productosFiltrados = this.productos;
-  }
+    constructor(private productoService: ProductoService, private router: Router) {
+      this.productosFiltrados = this.productos;
+    }
  
   ngOnInit(): void {
     this.productos = this.productoService.obtenerProductos();
   }
  
   editarProducto(producto: Producto): void {
-    this.productoService.actualizarProducto(producto);
+    // Navegar a la vista de edición para el producto
+    this.router.navigate(['edit', producto.codigo]);
   }
  
   eliminarProducto(producto: Producto): void {
@@ -139,6 +143,10 @@ export class ProductoList {
 
       return coincideTexto && coincideCategoria;
     });
+  }
+
+  trackByCodigo(index: number, producto: Producto): string {
+    return producto.codigo;
   }
 
   limpiarFiltros(): void {

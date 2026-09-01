@@ -13,19 +13,11 @@
       [class.invalid]="productoForm.get('codigo')?.invalid && productoForm.get('codigo')?.touched"
     />
 
-    @if (productoForm.get('codigo')?.invalid && productoForm.get('codigo')?.touched) {
-      <div class="error-message">
-        @if (productoForm.get('codigo')?.errors?.['required']) {
-          <span>El código es obligatorio</span>
-        }
-        @if (productoForm.get('codigo')?.errors?.['minlength']) {
-          <span>Mínimo 3 caracteres</span>
-        }
-        @if (productoForm.get('codigo')?.errors?.['codigoDuplicado']) {
-          <span>El código ya existe</span>
-        }
-      </div>
-    }
+    <div *ngIf="productoForm.get('codigo')?.invalid && productoForm.get('codigo')?.touched" class="error-message">
+      <span *ngIf="productoForm.get('codigo')?.errors?.['required']">El código es obligatorio</span>
+      <span *ngIf="productoForm.get('codigo')?.errors?.['minlength']">Mínimo 3 caracteres</span>
+      <span *ngIf="productoForm.get('codigo')?.errors?.['codigoDuplicado']">El código ya existe</span>
+    </div>
   </div>
 
   <!-- Nombre -->
@@ -39,13 +31,9 @@
       [class.invalid]="productoForm.get('nombre')?.invalid && productoForm.get('nombre')?.touched"
     />
 
-    @if (productoForm.get('nombre')?.invalid && productoForm.get('nombre')?.touched) {
-      <div class="error-message">
-        @if (productoForm.get('nombre')?.errors?.['required']) {
-          <span>El nombre es obligatorio</span>
-        }
-      </div>
-    }
+    <div *ngIf="productoForm.get('nombre')?.invalid && productoForm.get('nombre')?.touched" class="error-message">
+      <span *ngIf="productoForm.get('nombre')?.errors?.['required']">El nombre es obligatorio</span>
+    </div>
   </div>
 
   <!-- Categoría -->
@@ -65,11 +53,9 @@
       <option value="Otros">Otros</option>
     </select>
 
-    @if (productoForm.get('categoria')?.invalid && productoForm.get('categoria')?.touched) {
-      <div class="error-message">
-        <span>La categoría es obligatoria</span>
-      </div>
-    }
+    <div *ngIf="productoForm.get('categoria')?.invalid && productoForm.get('categoria')?.touched" class="error-message">
+      <span>La categoría es obligatoria</span>
+    </div>
   </div>
 
   <!-- Precios -->
@@ -85,16 +71,10 @@
         [class.invalid]="productoForm.get('precioCompra')?.invalid && productoForm.get('precioCompra')?.touched"
       />
 
-      @if (productoForm.get('precioCompra')?.invalid && productoForm.get('precioCompra')?.touched) {
-        <div class="error-message">
-          @if (productoForm.get('precioCompra')?.errors?.['required']) {
-            <span>El precio de compra es obligatorio</span>
-          }
-          @if (productoForm.get('precioCompra')?.errors?.['min']) {
-            <span>Debe ser mayor o igual a 0</span>
-          }
-        </div>
-      }
+      <div *ngIf="productoForm.get('precioCompra')?.invalid && productoForm.get('precioCompra')?.touched" class="error-message">
+        <span *ngIf="productoForm.get('precioCompra')?.errors?.['required']">El precio de compra es obligatorio</span>
+        <span *ngIf="productoForm.get('precioCompra')?.errors?.['min']">Debe ser mayor o igual a 0</span>
+      </div>
     </div>
 
     <div class="form-group">
@@ -111,22 +91,14 @@
         "
       />
 
-      @if (productoForm.get('precioVenta')?.invalid && productoForm.get('precioVenta')?.touched) {
-        <div class="error-message">
-          @if (productoForm.get('precioVenta')?.errors?.['required']) {
-            <span>El precio de venta es obligatorio</span>
-          }
-          @if (productoForm.get('precioVenta')?.errors?.['min']) {
-            <span>Debe ser mayor o igual a 0</span>
-          }
-        </div>
-      }
+      <div *ngIf="productoForm.get('precioVenta')?.invalid && productoForm.get('precioVenta')?.touched" class="error-message">
+        <span *ngIf="productoForm.get('precioVenta')?.errors?.['required']">El precio de venta es obligatorio</span>
+        <span *ngIf="productoForm.get('precioVenta')?.errors?.['min']">Debe ser mayor o igual a 0</span>
+      </div>
 
-      @if (productoForm.hasError('precioVentaInvalido') && productoForm.get('precioVenta')?.touched) {
-        <div class="error-message">
-          <span>El precio de venta debe ser mayor que el precio de compra</span>
-        </div>
-      }
+      <div *ngIf="productoForm.hasError('precioVentaInvalido') && productoForm.get('precioVenta')?.touched" class="error-message">
+        <span>El precio de venta debe ser mayor que el precio de compra</span>
+      </div>
     </div>
   </div>
 
@@ -142,16 +114,10 @@
         [class.invalid]="productoForm.get('existencias')?.invalid && productoForm.get('existencias')?.touched"
       />
 
-      @if (productoForm.get('existencias')?.invalid && productoForm.get('existencias')?.touched) {
-        <div class="error-message">
-          @if (productoForm.get('existencias')?.errors?.['required']) {
-            <span>Las existencias son obligatorias</span>
-          }
-          @if (productoForm.get('existencias')?.errors?.['min']) {
-            <span>No puede ser negativo</span>
-          }
-        </div>
-      }
+      <div *ngIf="productoForm.get('existencias')?.invalid && productoForm.get('existencias')?.touched" class="error-message">
+        <span *ngIf="productoForm.get('existencias')?.errors?.['required']">Las existencias son obligatorias</span>
+        <span *ngIf="productoForm.get('existencias')?.errors?.['min']">No puede ser negativo</span>
+      </div>
     </div>
 
     <div class="form-group">
@@ -164,16 +130,10 @@
         [class.invalid]="productoForm.get('stockMinimo')?.invalid && productoForm.get('stockMinimo')?.touched"
       />
 
-      @if (productoForm.get('stockMinimo')?.invalid && productoForm.get('stockMinimo')?.touched) {
-        <div class="error-message">
-          @if (productoForm.get('stockMinimo')?.errors?.['required']) {
-            <span>El stock mínimo es obligatorio</span>
-          }
-          @if (productoForm.get('stockMinimo')?.errors?.['min']) {
-            <span>No puede ser negativo</span>
-          }
-        </div>
-      }
+      <div *ngIf="productoForm.get('stockMinimo')?.invalid && productoForm.get('stockMinimo')?.touched" class="error-message">
+        <span *ngIf="productoForm.get('stockMinimo')?.errors?.['required']">El stock mínimo es obligatorio</span>
+        <span *ngIf="productoForm.get('stockMinimo')?.errors?.['min']">No puede ser negativo</span>
+      </div>
     </div>
   </div>
 
@@ -188,11 +148,9 @@
       [class.invalid]="productoForm.get('proveedor')?.invalid && productoForm.get('proveedor')?.touched"
     />
 
-    @if (productoForm.get('proveedor')?.invalid && productoForm.get('proveedor')?.touched) {
-      <div class="error-message">
-        <span>El proveedor es obligatorio</span>
-      </div>
-    }
+    <div *ngIf="productoForm.get('proveedor')?.invalid && productoForm.get('proveedor')?.touched" class="error-message">
+      <span>El proveedor es obligatorio</span>
+    </div>
   </div>
 
   <!-- Fecha de ingreso -->
@@ -205,11 +163,9 @@
       [class.invalid]="productoForm.get('fechaIngreso')?.invalid && productoForm.get('fechaIngreso')?.touched"
     />
 
-    @if (productoForm.get('fechaIngreso')?.invalid && productoForm.get('fechaIngreso')?.touched) {
-      <div class="error-message">
-        <span>La fecha de ingreso es obligatoria</span>
-      </div>
-    }
+    <div *ngIf="productoForm.get('fechaIngreso')?.invalid && productoForm.get('fechaIngreso')?.touched" class="error-message">
+      <span>La fecha de ingreso es obligatoria</span>
+    </div>
   </div>
 
   <!-- Descripción + Contador -->
@@ -229,13 +185,9 @@
       (restan {{ caracteresRestantes }})
     </div>
 
-    @if (productoForm.get('descripcion')?.invalid && productoForm.get('descripcion')?.touched) {
-      <div class="error-message">
-        @if (productoForm.get('descripcion')?.errors?.['maxlength']) {
-          <span>Máximo {{ maxCaracteres }} caracteres</span>
-        }
-      </div>
-    }
+    <div *ngIf="productoForm.get('descripcion')?.invalid && productoForm.get('descripcion')?.touched" class="error-message">
+      <span *ngIf="productoForm.get('descripcion')?.errors?.['maxlength']">Máximo {{ maxCaracteres }} caracteres</span>
+    </div>
   </div>
 
   <!-- Activo -->
