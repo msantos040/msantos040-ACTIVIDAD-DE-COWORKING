@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { Producto } from '../../models/producto';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Producto } from '../../models/producto';
+import { ProductoService } from '../../services/producto';
 
 @Component({
   selector: 'app-producto-list',
@@ -8,50 +9,9 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './producto-list.html',
   styleUrl: './producto-list.css'
 })
+export class ProductoList implements OnInit {
 
-export class ProductoList {
-
-  productos: Producto[] = [
-    {
-      codigo: 'TEC001',
-      nombre: 'Teclado mecánico',
-      categoria: 'Tecnología',
-      precioCompra: 250,
-      precioVenta: 400,
-      existencias: 5,
-      stockMinimo: 10,
-      proveedor: 'Tech Supplier',
-      fechaIngreso: '2026-09-01',
-      descripcion: 'Teclado mecánico RGB',
-      activo: true
-    },
-    {
-      codigo: 'TEC002',
-      nombre: 'Mouse inalámbrico',
-      categoria: 'Tecnología',
-      precioCompra: 100,
-      precioVenta: 175,
-      existencias: 20,
-      stockMinimo: 5,
-      proveedor: 'Tech Supplier',
-      fechaIngreso: '2026-09-01',
-      descripcion: 'Mouse inalámbrico',
-      activo: true
-    },
-    {
-      codigo: 'ALI001',
-      nombre: 'Galletas',
-      categoria: 'Alimentos',
-      precioCompra: 5,
-      precioVenta: 8,
-      existencias: 30,
-      stockMinimo: 10,
-      proveedor: 'Distribuidora ABC',
-      fechaIngreso: '2026-09-01',
-      descripcion: 'Paquete de galletas',
-      activo: true
-    }
-  ];
+  productos: Producto[] = [];
 
   productosFiltrados: Producto[] = [];
 
@@ -68,7 +28,10 @@ export class ProductoList {
     'Otros'
   ];
 
-  constructor() {
+  constructor(private productoService: ProductoService) {}
+
+  ngOnInit(): void {
+    this.productos = this.productoService.obtenerProductos();
     this.productosFiltrados = this.productos;
   }
 
@@ -93,5 +56,54 @@ export class ProductoList {
     this.textoBusqueda = '';
     this.categoriaSeleccionada = '';
     this.productosFiltrados = this.productos;
+  }
+
+  editarProducto(producto: Producto): void {
+    this.productoService.actualizarProducto(producto);
+    this.productos = this.productoService.obtenerProductos();
+    this.buscar();
+  }
+
+  eliminarProducto(producto: Producto): void {
+
+    const confirmar = confirm(
+      `¿Desea eliminar el producto "${producto.nombre}"?`
+    );
+
+    if (confirmar) {
+      this.productoService.eliminarProducto(producto.codigo);
+
+      this.productos = this.productoService.obtenerProductos();
+
+      this.buscar();
+    }
+  }
+
+  calcularGanancia(producto: Producto): number {
+    return producto.precioVenta - producto.precioCompra;
+  }
+
+  calcularValorInventario(producto: Producto): number {
+    return producto.precioCompra * producto.existencias;
+  }
+
+  calcularValorTotalInventario(): number {
+    return this.productos.reduce(
+      (total, producto) =>
+        total + this.calcularValorInventario(producto),
+      0
+    );
+  }
+
+  calcularGananciaTotal(): number {
+    return this.productos.reduce(
+      (total, producto) =>
+        total + this.calcularGanancia(producto) * producto.existencias,
+      0
+    );
+  }
+
+  tieneStockBajo(producto: Producto): boolean {
+    return producto.existencias <= producto.stockMinimo;
   }
 }
