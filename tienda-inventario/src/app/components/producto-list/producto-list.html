@@ -1,1 +1,180 @@
-<p>producto-list works!</p>
+<section class="inventario">
+
+  <div class="encabezado">
+    <h2>Inventario de productos</h2>
+    <p>Consulta y filtra los productos registrados.</p>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filtros">
+
+    <div class="campo">
+      <label for="busqueda">Buscar producto</label>
+
+      <input
+        id="busqueda"
+        type="text"
+        [(ngModel)]="textoBusqueda"
+        (input)="buscar()"
+        placeholder="Buscar por código o nombre"
+      />
+    </div>
+
+    <div class="campo">
+      <label for="categoria">Categoría</label>
+
+      <select
+        id="categoria"
+        [(ngModel)]="categoriaSeleccionada"
+        (change)="buscar()"
+      >
+
+        <option value="">Todas</option>
+
+        @for (categoria of categorias; track categoria) {
+          <option [value]="categoria">
+            {{ categoria }}
+          </option>
+        }
+
+      </select>
+    </div>
+
+    <div class="campo boton-container">
+      <button
+        type="button"
+        class="btn-limpiar"
+        (click)="limpiarFiltros()"
+      >
+        Limpiar filtros
+      </button>
+    </div>
+
+  </div>
+
+  <!-- INFORMACIÓN DE RESULTADOS -->
+  <div class="resultado-info">
+
+    <span>
+      Productos encontrados:
+      <strong>{{ productosFiltrados.length }}</strong>
+    </span>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="tabla-container">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio compra</th>
+          <th>Precio venta</th>
+          <th>Existencias</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        @for (producto of productosFiltrados; track producto.codigo) {
+
+          <tr>
+
+            <td>
+              {{ producto.codigo }}
+            </td>
+
+            <td>
+              {{ producto.nombre }}
+            </td>
+
+            <td>
+              <span class="categoria">
+                {{ producto.categoria }}
+              </span>
+            </td>
+
+            <td>
+              Q{{ producto.precioCompra.toFixed(2) }}
+            </td>
+
+            <td>
+              Q{{ producto.precioVenta.toFixed(2) }}
+            </td>
+
+            <td>
+              {{ producto.existencias }}
+            </td>
+
+            <td>
+
+              @if (producto.activo) {
+
+                <span class="estado activo">
+                  Activo
+                </span>
+
+              } @else {
+
+                <span class="estado inactivo">
+                  Inactivo
+                </span>
+
+              }
+
+            </td>
+
+            <td>
+
+              <div class="acciones">
+
+                <button
+                  type="button"
+                  class="btn-editar"
+                >
+                  Editar
+                </button>
+
+                <button
+                  type="button"
+                  class="btn-eliminar"
+                >
+                  Eliminar
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        }
+
+        @empty {
+
+          <tr>
+
+            <td
+              colspan="8"
+              class="sin-resultados"
+            >
+              No se encontraron productos.
+            </td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
